@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    /* 重置默认样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* 搜索和筛选样式 */
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      background-color: #ffffff;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar input[type="text"] {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-right: 10px;
+      width: 200px;
+    }
+
+    .search-bar select {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+
+    .search-bar button {
+      padding: 8px 16px;
+      background-color: #3498db;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-bar button:hover {
+      background-color: #2980b9;
+    }
+
+    /* 数据统计样式 */
+    .data-count {
+      text-align: right;
+      margin: 10px 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* 表格样式 */
+    table {
+      width: 100%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: #ffffff;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f1f1f1;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #ecf0f1;
+    }
+
+    /* 操作列样式 */
+    .action-button {
+      padding: 5px 10px;
+      background-color: #e67e22;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .action-button:hover {
+      background-color: #d35400;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>学生就业统计表</h1>
+  <form class="info" autocomplete="off">
+    <input type="text" class="uname" name="uname" placeholder="姓名">
+    <input type="text" class="age" name="age" placeholder="年龄">
+    <input type="text" class="salary" name="salary" placeholder="薪资">
+    <select name="gender" id="gender" class="gender">
+      <option value="男">男</option>
+      <option value="女">女</option>
+    </select>
+    <select name="city" id="city" class="city">
+      <option value="重庆">重庆</option>
+      <option value="四川">四川</option>
+      <option value="北京">北京</option>
+    </select>
+    <button class="add">添加</button>
+  </form>
+
+  <div class="title">一共有<span>0</span>数据</div>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>姓名</th>
+        <th>年龄</th>
+        <th>性别</th>
+        <th>薪资</th>
+        <th>就业城市</th>
+        <th>录入时间</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+  </table>
+
+  <script>
+    //初始化数据
+    const initData = [{
+      stuId: 1,
+      uname: 'zs',
+      age: 22,
+      gender: '女',
+      salary: '12000',
+      city: '北京',
+      time: '2013/9/8 02:05:08'
+    }]
+
+
+    if (!localStorage.getItem('initData')) {
+      localStorage.setItem('initData', JSON.stringify(initData));
+    }
+    const arr = JSON.parse(localStorage.getItem('initData')) || [];
+    console.log(arr)
+
+    //渲染
+    const tbody = document.querySelector('tbody')
+    const info = document.querySelector('.info')
+    const uname = document.querySelector('.uname')
+    const age = document.querySelector('.age')
+    const salary = document.querySelector('.salary')
+    const city = document.querySelector('.city');
+    const gender = document.querySelector('.gender');
+    function render() {
+      // 利用map数组，返回给tr的数组
+      const trArr = arr.map(function (ele, index) {
+        return `
+         <tr>
+          <td>${ele.stuId}</td>
+          <td>${ele.uname}</td>
+          <td>${ele.age}</td>
+          <td>${ele.gender}</td>
+          <td>${ele.salary}</td>
+          <td>${ele.city}</td>
+          <td>${ele.time}</td>
+          <td><a href="javascript:;" data-id="${index}">删除</a></td>
+        </tr>
+        `;
+      });
+      tbody.innerHTML = trArr.join('');
+      document.querySelector('.title span').innerHTML = arr.length;
+    }
+    render();
+    //新增业务
+    //form 表单注册提交事件 阻止默认行为
+
+    info.addEventListener('submit', function (e) {
+      e.preventDefault()
+      //非空判断
+      if (!uname.value || !age.value || !salary.value) {
+        return alert('输入的内容不能为空')
+      }
+      //给arr追加对象 里边存储 表单获取过来的数据
+      arr.push({
+        stuId: arr.length ? arr[arr.length - 1].stuId + 1 : 1,
+        uname: uname.value,
+        age: age.value,
+        gender: gender.value,
+        salary: salary.value,
+        city: city.value,
+        time: new Date().toLocaleString()
+      })
+      //渲染页面
+      render()
+      this.reset()//重置表单
+      //把数组重新存入本地存储里边 记录转换为JSON字符串
+      localStorage.setItem('initData', JSON.stringify(arr))
+
+    })
+
+    //删除业务
+    // tbody.addEventListener('click', function (e) {
+    //  if (e.target.tagName === 'A') {
+    //     if (confirm('你确定要删除这条数据')) {
+    //       arr.splice(e.target.dataset.id, 1)
+    //       render()
+    //       //存到本地
+    //       localStorage.setItem('initData', JSON.stringify(arr))
+    //     }
+    //   }
+    // })
+  </script>
+</body>
+
+</html>
