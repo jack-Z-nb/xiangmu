@@ -228,16 +228,16 @@
     })
 
     //删除业务
-    // tbody.addEventListener('click', function (e) {
-    //  if (e.target.tagName === 'A') {
-    //     if (confirm('你确定要删除这条数据')) {
-    //       arr.splice(e.target.dataset.id, 1)
-    //       render()
-    //       //存到本地
-    //       localStorage.setItem('initData', JSON.stringify(arr))
-    //     }
-    //   }
-    // })
+    tbody.addEventListener('click', function (e) {
+     if (e.target.tagName === 'A') {
+        if (confirm('你确定要删除这条数据')) {
+          arr.splice(e.target.dataset.id, 1)
+          render()
+          //存到本地
+          localStorage.setItem('initData', JSON.stringify(arr))
+        }
+      }
+    })
   </script>
 </body>
 
